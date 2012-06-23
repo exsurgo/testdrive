@@ -1,0 +1,52 @@
+﻿<#@ template debug="False" hostspecific="true" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+//Code is auto-generated
+using TestDrive;
+
+namespace <#=GetNamespaceName()#>
+{
+    public partial class TestBase
+    {
+<# WriteProperties(); #>
+	}
+}
+
+<#+
+
+    public void WriteProperties()
+    {
+        foreach (var name in GetModelClassNames())
+        {
+            WriteLine("\t\tpublic " + name + "Model " + name + " { get { return Browser.Model<" + name + "Model>(); } }");
+        }
+    }
+
+    private List<string> GetModelClassNames()
+    {
+        var classNames = new List<string>();
+        var path = Host.ResolvePath("..\\Models\\");
+        var regex = new Regex("public(\\s+)class(\\s+)(\\w+)Model(\\s+)");
+        var fileNames = Directory.GetFiles(path);
+        foreach (var name in fileNames)
+        {
+            var text = File.ReadAllText(name);
+            var matches = regex.Matches(text);
+            foreach (Match match in matches)
+            {
+                GroupCollection groups = match.Groups;
+                classNames.Add(groups[3].Value);
+            }
+        }
+        return classNames;
+    }
+
+    private string GetNamespaceName()
+    {
+        return "Samples";
+    }
+
+#>
