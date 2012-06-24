@@ -16,19 +16,21 @@ namespace Samples
             AmazonSearch.SearchButton.Click();
 
             //Check for search result count
-            Assert.That(AmazonResults.Count.IsVisible);
+            TagAssert.IsVisible(AmazonResults.Count);
 
             //Check first row for model number
-            Assert.That(AmazonResults.FirstRow.Title.HasText("TR1256B"));
+            var rows = AmazonResults.Rows;
+            //var firstRow = .First();
+            //Assert.That(firstRow.Title.HasText("TR1256B"));
 
             //View details
-            AmazonResults.FirstRow.Title.Click();
+            //firstRow.Title.Click();
 
             //Check prices
-            if (AmazonDetails.ActualPrice.IsVisible && AmazonDetails.ListPrice.IsVisible)
-            {
-                Assert.That(AmazonDetails.ActualPriceValue < AmazonDetails.ListPriceValue);
-            }
+            //if (AmazonDetails.ActualPrice.IsVisible && AmazonDetails.ListPrice.IsVisible)
+            //{
+            //    Assert.That(AmazonDetails.ActualPriceValue < AmazonDetails.ListPriceValue);
+            //}
 
 
 

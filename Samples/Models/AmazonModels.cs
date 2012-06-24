@@ -15,8 +15,8 @@ namespace Samples
     {
         public H2 Count;
 
-        [Class("fstRow")]
-        public Row FirstRow;
+        [Id("result_", MatchType.StartsWith)]
+        public TagCollection<Row> Rows;
 
         public class Row : Tag
         {

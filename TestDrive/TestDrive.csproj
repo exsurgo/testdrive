@@ -47,6 +47,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\Newtonsoft.Json.Net35.dll</HintPath>
     </Reference>
+    <Reference Include="nunit.framework, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="OpenPop, Version=2.0.3.358, Culture=neutral, PublicKeyToken=bebb5741791313cd, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\OpenPop.dll</HintPath>
@@ -74,6 +78,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TagAssert.cs" />
     <Compile Include="Attributes.cs" />
     <Compile Include="Browser.cs" />
     <Compile Include="Tags.cs" />
@@ -86,6 +91,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Libraries\Newtonsoft.Json.Net35.dll" />
+    <Content Include="Libraries\nunit.framework.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Libraries\OpenPop.dll" />
     <Content Include="Libraries\Selenium.WebDriverBackedSelenium.dll" />
     <Content Include="Libraries\ThoughtWorks.Selenium.Core.dll" />

@@ -54,6 +54,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\AmazonTests.cs" />
     <Compile Include="Tests\GoogleTests.cs" />
+    <Compile Include="Models\SampleModels.cs" />
+    <Compile Include="Tests\SampleTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config">

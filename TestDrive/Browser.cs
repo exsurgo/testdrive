@@ -292,9 +292,9 @@ namespace TestDrive
 
         public static T GetTag<T>(string selector) where T : Tag, new()
         {
-            var element = new T { Selector = selector };
-            InitTag(element);
-            return element;
+            var tag = new T { Selector = selector };
+            InitTag(tag);
+            return tag;
         }
 
         public static List<T> GetTags<T>(string selector) where T : Tag
@@ -303,20 +303,20 @@ namespace TestDrive
             var count = Count(selector);
             if (count == 1)
             {
-                var element = Activator.CreateInstance(typeof(T));
-                element.GetType().GetProperty("Selector").SetValue(element, selector, null);
-                InitTag((Tag)element);
-                list.Add((T)element);
+                var tag = Activator.CreateInstance(typeof(T));
+                tag.GetType().GetProperty("Selector").SetValue(tag, selector, null);
+                InitTag((Tag)tag);
+                list.Add((T)tag);
             }
             else if (count > 1)
             {
                 for (int i = 0; i < count; i++)
                 {
-                    var elSelector = selector.TrimEnd() + ":eq(" + i + ")";
-                    var element = Activator.CreateInstance(typeof(T));
-                    element.GetType().GetProperty("Selector").SetValue(element, elSelector, null);
-                    InitTag((Tag)element);
-                    list.Add((T)element);
+                    var tagSelector = selector.TrimEnd() + ":eq(" + i + ")";
+                    var tag = Activator.CreateInstance(typeof(T));
+                    tag.GetType().GetProperty("Selector").SetValue(tag, tagSelector, null);
+                    InitTag((Tag)tag);
+                    list.Add((T)tag);
                 }
             }
 
@@ -489,7 +489,7 @@ namespace TestDrive
                     PropertyInfo prop = (PropertyInfo)member;
                     type = prop.PropertyType;
 
-                    //Must be of type Element/ElementCollection
+                    //Must be of type Tag/TagCollection
                     if ((typeof(Tag)).IsAssignableFrom(type) || (typeof(TagCollection<>)).IsAssignableFrom(type))
                     {
                         string selector = GetAttribute(member);
@@ -509,8 +509,8 @@ namespace TestDrive
                     FieldInfo field = (FieldInfo)member;
                     type = field.FieldType;
 
-                    //Must be of type Element/ElementCollection
-                    if ((typeof(Tag)).IsAssignableFrom(type) || type.Name.Contains("ElementCollection`1"))
+                    //Must be of type Tag/TagCollection
+                    if ((typeof(Tag)).IsAssignableFrom(type) || type.Name.Contains("TagCollection`1"))
                     {
                         string selector = GetAttribute(member);
                         if (selector != null)
@@ -527,8 +527,8 @@ namespace TestDrive
 
         private static object CreateTag(Type type, string selector)
         {
-            //List of elements
-            if (type.Name.Contains("ElementCollection`1"))
+            //List of tags
+            if (type.Name.Contains("TagCollection`1"))
             {
                 var elType = type.GetGenericArguments();
                 var elCollectType = typeof(TagCollection<>);
@@ -539,22 +539,22 @@ namespace TestDrive
                 return collection;
             }
 
-            //Single element
+            //Single tag
             if (typeof(Tag).IsAssignableFrom(type))
             {
-                //Ensure single element
+                //Ensure single tag
                 if (Count(selector) > 1) throw new 
-                    Exception("Multiple elements where found with the selector \"" + selector + "\"");
+                    Exception("Multiple tags where found with the selector \"" + selector + "\"");
 
-                //Return element
-                var element = Activator.CreateInstance(type);
-                element.GetType().GetProperty("Selector").SetValue(element, selector, null);
-                InitTag((Tag)element);
+                //Return tag
+                var tag = Activator.CreateInstance(type);
+                tag.GetType().GetProperty("Selector").SetValue(tag, selector, null);
+                InitTag((Tag)tag);
 
-                return element;
+                return tag;
             }
 
-            throw new Exception("Member type must be of Element or ElementCollection.");
+            throw new Exception("Member type must be of Tag or TagCollection.");
         }
 
         private static string GetAttribute(object source)
@@ -568,8 +568,8 @@ namespace TestDrive
             else if (source is PropertyInfo) type = ((PropertyInfo)source).PropertyType;
             else type = source.GetType();
             
-            //Element collection type
-            isCollection = type.Name.Contains("ElementCollection`1");
+            //Tag collection type
+            isCollection = type.Name.Contains("TagCollection`1");
             if (isCollection)
             {
                 //Try to get collection selector attribute
@@ -579,12 +579,12 @@ namespace TestDrive
                 type = type.GetGenericArguments().First();
             }
 
-            //Try to get element member/class selector attribute
+            //Try to get tag member/class selector attribute
             selector = TryGetSelectorByAttribute(source, type);
             if (!string.IsNullOrEmpty(selector)) return selector;
 
             //Try to get selector via naming convention
-            //Only do this for single elements, not collections
+            //Only do this for single tags, not collections
             if (!isCollection)
             {
                 selector = TryGetSelectorByNamingConvention(source, type);
@@ -621,7 +621,7 @@ namespace TestDrive
             else fullName = source.GetType().Name;
             string name = Regex.Replace(fullName, type.Name + "$", "");
 
-            //Input elements - by name
+            //Input tags - by name
             atts = type.GetCustomAttributes(typeof(InputAttribute), false);
             if (atts.Any())
             {
@@ -641,7 +641,7 @@ namespace TestDrive
                 }
             }
 
-            //Link elements - by text
+            //Link tags - by text
             if (typeof(Link).IsAssignableFrom(type))
             {
                 var spacedText = Regex.Replace(name, "([A-Z])", " $1", RegexOptions.Compiled).Trim();
