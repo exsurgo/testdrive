@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace TestDrive
 {
-    public static class TagAssert
+    public static class AssertTag
     {
         public static void IsVisible(Tag tag)
         {

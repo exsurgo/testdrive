@@ -20,10 +20,12 @@ namespace Samples
 
         public class Row : Tag
         {
-            public H3 Title;
+            [Selector("h3 a")]
+            public Link Title;
         }
     }
 
+    [Selector("#handleBuy")]
     public class AmazonDetailsModel : Tag
     {
         [Id("btAsinTitle")]
@@ -46,13 +48,14 @@ namespace Samples
         [Class(".prod_image_selector")]
         public Image MainImage;
 
-        [Selector("PIAltImagesDiv > div > div")]
-        public TagCollection<Div> Thumbs;
+        [Selector("#PIAltImagesDiv img")]
+        public TagCollection<Image> Thumbs;
+    }
 
-        [Class("ap_popover")]
-        public Tag Popup;
-
+    [Class("ap_popover")]
+    public class AmazonDetailsPopupModel : Tag
+    {
         [Class("ap_closebutton")]
-        public Tag PopupCloseButton;
+        public Tag CloseButton;
     }
 }

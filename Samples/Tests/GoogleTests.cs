@@ -16,19 +16,19 @@ namespace Samples
             GoogleSearch.SearchButton.Click();
 
             //Check that search result list is visible
-            TagAssert.IsVisible(GoogleResults);
+            AssertTag.IsVisible(GoogleResults);
 
             //Should be more than 1 result
             Assert.That(GoogleResults.Results.Count > 1);
 
             //Check first search result, should be selenium web site
             var firstResult = GoogleResults.Results.First();
-            TagAssert.HasText(firstResult.Title, "Selenium - Web Browser Automation");
-            TagAssert.HasText(firstResult.Description, "Selenium automates browsers.");
+            AssertTag.HasText(firstResult.Title, "Selenium - Web Browser Automation");
+            AssertTag.HasText(firstResult.Description, "Selenium automates browsers.");
 
             //Check second search result, should be Wikipedia
             var secondResult = GoogleResults.Results.Get(1);
-            TagAssert.HasText(secondResult.Title, "Wikipedia");
+            AssertTag.HasText(secondResult.Title, "Wikipedia");
         }
 
     }

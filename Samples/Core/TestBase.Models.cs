@@ -9,6 +9,7 @@ namespace Samples
 		public AmazonSearchModel AmazonSearch { get { return Browser.Model<AmazonSearchModel>(); } }
 		public AmazonResultsModel AmazonResults { get { return Browser.Model<AmazonResultsModel>(); } }
 		public AmazonDetailsModel AmazonDetails { get { return Browser.Model<AmazonDetailsModel>(); } }
+		public AmazonDetailsPopupModel AmazonDetailsPopup { get { return Browser.Model<AmazonDetailsPopupModel>(); } }
 		public GoogleSearchModel GoogleSearch { get { return Browser.Model<GoogleSearchModel>(); } }
 		public GoogleResultsModel GoogleResults { get { return Browser.Model<GoogleResultsModel>(); } }
 		public HelloWorldModel HelloWorld { get { return Browser.Model<HelloWorldModel>(); } }

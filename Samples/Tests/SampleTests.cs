@@ -19,7 +19,7 @@ public class HelloWorldTests : TestBase
 
         //Check for displayed result
         //Timing is handled automatically
-        TagAssert.HasText(HelloWorld.Display, "Hello World");
+        AssertTag.HasText(HelloWorld.Display, "Hello World");
     }
 
 [Test]
@@ -28,8 +28,8 @@ public void ListTest()
     var count = List.Rows.Count;
     var firstRow = List.Rows.First();
     var secondRow = List.Rows.First();
-    TagAssert.IsVisible(firstRow.Title);
-    TagAssert.HasText(secondRow.Description, "Hello");
+    AssertTag.IsVisible(firstRow.Title);
+    AssertTag.HasText(secondRow.Description, "Hello");
 }
 }
 
