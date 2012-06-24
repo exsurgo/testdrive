@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="TestDrive : Automated Web Application Test Framework for .NET" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>TestDrive</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/exsurgo/testdrive">View on GitHub</a>
+
+          <h1 id="project_title">TestDrive</h1>
+          <h2 id="project_tagline">Automated Web Application Test Framework for .NET</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/exsurgo/testdrive/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/exsurgo/testdrive/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h2>Overview</h2>
+
+<p>TestDrive allows you to quickly and easily set up automated UI tests for highly-complex web applications.  The main goal of the framework is to greatly reduce the effort involved in creating automated tests.  Behind the scenes, the framework uses Selenium WebDriver and jQuery to drive its behavior.</p>
+
+<ul>
+<li><strong>Automated UI Model Binding</strong></li>
+<li><strong>Support for Nested Models</strong></li>
+<li><strong>JQuery Selector Support</strong></li>
+<li><strong>Timing Management</strong></li>
+<li><strong>Email Testing</strong></li>
+<li><strong>Dynamic Model Binding</strong></li>
+<li><strong>T4 Template Generation</strong></li>
+</ul><h2>Hello World</h2>
+
+<p>TestDrive uses <strong>Model</strong> classes to represent the UI of a web application, and <strong>Test</strong> classes to run tests based on those models.  The following sample demos how one would wire a model to an HTML view, then test again it.</p>
+
+<p><strong>View</strong></p>
+
+<div class="highlight">
+<pre><span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"Text"</span> <span class="na">name=</span><span class="s">"Say"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"Say"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"display"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</pre>
+</div>
+
+
+<p><strong>Model</strong></p>
+
+<div class="highlight">
+<pre><span class="c1">//All models and properties inherit from Tag</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">HelloWorldModel</span> <span class="p">:</span> <span class="n">Tag</span> 
+<span class="p">{</span>
+    <span class="k">public</span> <span class="n">TextBox</span> <span class="n">SayTextBox</span><span class="p">;</span> <span class="c1">//input with name="Say"</span>
+
+    <span class="k">public</span> <span class="n">SubmitButton</span> <span class="n">SayButton</span><span class="p">;</span> <span class="c1">//first submit button</span>
+
+<span class="na">    [Selector("#display")]</span>
+    <span class="k">public</span> <span class="n">Tag</span> <span class="n">Display</span><span class="p">;</span> <span class="c1">//div with id="display"</span>
+<span class="p">}</span>
+</pre>
+</div>
+
+
+<p><strong>Tests</strong></p>
+
+<div class="highlight">
+<pre><span class="na">[TestFixture]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">HelloWorldTests</span> <span class="p">:</span> <span class="n">TestBase</span> <span class="c1">//Inherits from TestBase</span>
+<span class="p">{</span>
+<span class="na">    [Test]</span>
+    <span class="k">public</span> <span class="k">void</span> <span class="nf">SayHello</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">//Type hello world in textbox</span>
+        <span class="c1">//Models or auto-bound to UI</span>
+        <span class="c1">//HelloWorld property is auto-generated</span>
+        <span class="n">HelloWorld</span><span class="p">.</span><span class="n">SayTextBox</span><span class="p">.</span><span class="n">Type</span><span class="p">(</span><span class="s">"Hello World!"</span><span class="p">);</span>
+
+        <span class="c1">//Click save button</span>
+        <span class="n">HelloWorld</span><span class="p">.</span><span class="n">SayButton</span><span class="p">.</span><span class="n">Click</span><span class="p">();</span>
+
+        <span class="c1">//Check for displayed result</span>
+        <span class="c1">//Timing is handled automatically</span>
+        <span class="n">AssertTag</span><span class="p">.</span><span class="n">HasText</span><span class="p">(</span><span class="n">HelloWorld</span><span class="p">.</span><span class="n">Display</span><span class="p">,</span> <span class="s">"Hello World"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre>
+</div>
+
+
+<h2>Model Binding &amp; Selectors</h2>
+
+<p>HTML elements can be bound to models in a variety of ways, including selectors, ID's, classes, fields names and conventions.</p>
+
+<p><strong>By jQuery Selector</strong></p>
+
+<div class="highlight">
+<pre><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"my-div"</span><span class="nt">&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;</span>
+</pre>
+</div>
+
+
+<div class="highlight">
+<pre><span class="na">[Selector("#my-div &gt; Span")]</span>
+<span class="k">public</span> <span class="n">Tag</span> <span class="n">Target</span><span class="p">;</span>
+</pre>
+</div>
+
+
+<p><strong>By ID</strong></p>
+
+<div class="highlight">
+<pre><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"my-div"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</pre>
+</div>
+
+
+<div class="highlight">
+<pre><span class="na">[Id("my-div")]</span>
+<span class="k">public</span> <span class="n">Tag</span> <span class="n">Target</span><span class="p">;</span>
+</pre>
+</div>
+
+
+<p><strong>By Class</strong></p>
+
+<div class="highlight">
+<pre><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"some-div"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</pre>
+</div>
+
+
+<div class="highlight">
+<pre><span class="na">[Class("some-div")]</span>
+<span class="k">public</span> <span class="n">Tag</span> <span class="n">Target</span><span class="p">;</span>
+</pre>
+</div>
+
+
+<p><strong>By Name</strong></p>
+
+<div class="highlight">
+<pre><span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"my-password"</span> <span class="nt">/&gt;</span>
+</pre>
+</div>
+
+
+<div class="highlight">
+<pre><span class="na">[Name("my-password")]</span>
+<span class="k">public</span> <span class="n">TextBox</span> <span class="n">Password</span><span class="p">;</span>
+</pre>
+</div>
+
+
+<p><strong>By Convention - Inputs</strong></p>
+
+<div class="highlight">
+<pre><span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"Password"</span> <span class="nt">/&gt;</span>
+</pre>
+</div>
+
+
+<div class="highlight">
+<pre><span class="k">public</span> <span class="n">TextBox</span> <span class="n">PasswordTextBox</span><span class="p">;</span>
+</pre>
+</div>
+
+
+<p><strong>By Convention - Links</strong></p>
+
+<div class="highlight">
+<pre><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"#"</span><span class="nt">&gt;</span>Register<span class="nt">&lt;/a&gt;</span>
+</pre>
+</div>
+
+
+<div class="highlight">
+<pre><span class="k">public</span> <span class="n">Link</span> <span class="n">RegisterLink</span><span class="p">;</span>
+</pre>
+</div>
+
+
+<h2>Nested Models</h2>
+
+<p>Models can be nested within other models for binding to complex DOM structures.  Lists of tags are represented with the <strong>TagCollection</strong>.</p>
+
+<p><strong>View</strong></p>
+
+<div class="highlight">
+<pre><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"list"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"row1"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;span</span> <span class="na">id=</span><span class="s">"title"</span><span class="nt">&gt;&lt;/span&gt;</span>
+        <span class="nt">&lt;span</span> <span class="na">id=</span><span class="s">"description"</span><span class="nt">&gt;&lt;/span&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"row2"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;span</span> <span class="na">id=</span><span class="s">"title"</span><span class="nt">&gt;&lt;/span&gt;</span>
+        <span class="nt">&lt;span</span> <span class="na">id=</span><span class="s">"description"</span><span class="nt">&gt;&lt;/span&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</pre>
+</div>
+
+
+<p><strong>Model</strong></p>
+
+<div class="highlight">
+<pre><span class="na">[Id("list")]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">ListModel</span> <span class="p">:</span> <span class="n">Tag</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="n">TagCollection</span><span class="p">&lt;</span><span class="n">Row</span><span class="p">&gt;</span> <span class="n">Rows</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">Row</span> <span class="p">:</span> <span class="n">Tag</span>
+    <span class="p">{</span>
+<span class="na">        [Class("title")]</span>
+        <span class="k">public</span> <span class="n">Tag</span> <span class="n">Title</span><span class="p">;</span>
+
+<span class="na">        [Class("description")]</span>
+        <span class="k">public</span> <span class="n">Tag</span> <span class="n">Description</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre>
+</div>
+
+
+<p><strong>Tests</strong></p>
+
+<div class="highlight">
+<pre><span class="na">[Test]</span>
+<span class="k">public</span> <span class="k">void</span> <span class="nf">ListTest</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">count</span> <span class="p">=</span> <span class="n">List</span><span class="p">.</span><span class="n">Rows</span><span class="p">.</span><span class="n">Count</span><span class="p">;</span>
+    <span class="kt">var</span> <span class="n">firstRow</span> <span class="p">=</span> <span class="n">List</span><span class="p">.</span><span class="n">Rows</span><span class="p">.</span><span class="n">First</span><span class="p">();</span>
+    <span class="kt">var</span> <span class="n">secondRow</span> <span class="p">=</span> <span class="n">List</span><span class="p">.</span><span class="n">Rows</span><span class="p">.</span><span class="n">Get</span><span class="p">(</span><span class="m">1</span><span class="p">);</span>
+    <span class="n">AssertTag</span><span class="p">.</span><span class="n">IsVisible</span><span class="p">(</span><span class="n">firstRow</span><span class="p">.</span><span class="n">Title</span><span class="p">);</span>
+    <span class="n">AssertTag</span><span class="p">.</span><span class="n">HasText</span><span class="p">(</span><span class="n">secondRow</span><span class="p">.</span><span class="n">Description</span><span class="p">,</span> <span class="s">"Hello"</span><span class="p">);</span>
+<span class="p">}</span>
+</pre>
+</div>
+
+
+<h2>Dynamic Model Binding</h2>
+
+<p>One of the main problems with most automated UI test frameworks is that the models are only bound to the HTML once, which can easily break in single page apps or highly-dynamic pages.   TestDrive solves this by running DOM queries on-demand.</p>
+
+<div class="highlight">
+<pre><span class="c1">//Textbox doesn't exist yet</span>
+<span class="kt">var</span> <span class="n">textbox</span> <span class="p">=</span> <span class="n">Page</span><span class="p">.</span><span class="n">RegistrationForm</span><span class="p">.</span><span class="n">PasswordTextBox</span><span class="p">;</span>
+
+<span class="c1">//Goto registration page</span>
+<span class="n">Browser</span><span class="p">.</span><span class="n">GoTo</span><span class="p">(</span><span class="s">"/Registration"</span><span class="p">);</span>
+
+<span class="c1">//Textbox now exists</span>
+<span class="n">textbox</span><span class="p">.</span><span class="n">Type</span><span class="p">(</span><span class="s">"Hello"</span><span class="p">);</span>
+</pre>
+</div>
+
+
+<h2>Email Tests</h2>
+
+<p>TestDrive also has the ability to test HTML within emails via Pop3.  Email models are created in the same way as regular models, except they use the <strong>[Email(subject)]</strong> attribute.  Emails are identified by grabbing the first email with the provided subject.  The test email settings (username, password, host, etc.) must be defined in the config.  You can also configure the wait time for the email to be delivered to the account.</p>
+
+<p><strong>Email HTML</strong></p>
+
+<div class="highlight">
+<pre><span class="nt">&lt;div&gt;</span>
+    <span class="nt">&lt;h1&gt;</span>Registration Complete<span class="nt">&lt;/h1&gt;</span>
+    <span class="nt">&lt;p&gt;&lt;span&gt;</span>John<span class="nt">&lt;span&gt;</span>, your account has been registered.  Thank You!<span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"..."</span><span class="nt">&gt;</span>Click here to access account<span class="nt">&lt;/a&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</pre>
+</div>
+
+
+<p><strong>Email Model</strong></p>
+
+<div class="highlight">
+<pre><span class="c1">//Email models are identified by subject</span>
+<span class="na">[Email("Registration Complete")]</span>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">RegistrationEmailModel</span> <span class="p">:</span> <span class="n">Tag</span> 
+<span class="p">{</span>
+    <span class="k">public</span> <span class="n">H1</span> <span class="n">Title</span><span class="p">;</span> <span class="c1">//H1 tag</span>
+
+<span class="na">    [Selector("span:first")]</span>
+    <span class="k">public</span> <span class="n">Tag</span> <span class="n">NameDisplay</span><span class="p">;</span> <span class="c1">//first span</span>
+
+    <span class="k">public</span> <span class="n">Link</span> <span class="n">AccessLink</span><span class="p">;</span> <span class="c1">//link with access in text</span>
+<span class="p">}</span>
+</pre>
+</div>
+
+
+<p><strong>Email Tests</strong></p>
+
+<div class="highlight">
+<pre><span class="na">[Test]</span>
+<span class="k">public</span> <span class="k">void</span> <span class="nf">EmailTest</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">Form</span><span class="p">.</span><span class="n">NameTextBox</span><span class="p">.</span><span class="n">Type</span><span class="p">(</span><span class="s">"John"</span><span class="p">);</span>
+    <span class="n">Form</span><span class="p">.</span><span class="n">EmailTextBox</span><span class="p">.</span><span class="n">Type</span><span class="p">(</span><span class="s">"myemail@mail.com"</span><span class="p">);</span>
+    <span class="n">RegisterButton</span><span class="p">.</span><span class="n">Click</span><span class="p">();</span>
+    <span class="n">AssertTag</span><span class="p">.</span><span class="n">Exists</span><span class="p">(</span><span class="n">RegistrationEmail</span><span class="p">);</span>
+    <span class="n">Assert</span><span class="p">.</span><span class="n">That</span><span class="p">(</span><span class="n">RegistrationEmail</span><span class="p">.</span><span class="n">NameDisplay</span><span class="p">.</span><span class="n">Text</span> <span class="p">==</span> <span class="n">Form</span><span class="p">.</span><span class="n">NameTextBox</span><span class="p">.</span><span class="n">Text</span><span class="p">);</span>
+<span class="p">}</span>
+</pre>
+</div>
+
+
+<h2>Custom Asserts - AssertTag</h2>
+
+<p>The library also contains several custom NUnit asserts for tags. The <strong>AssertTag</strong> class contains a number of methods specific used to test <strong>Tag</strong> classes.</p>
+
+<div class="highlight">
+<pre><span class="n">AssertTag</span><span class="p">.</span><span class="n">Exists</span><span class="p">(</span><span class="n">tag</span><span class="p">);</span> <span class="c1">//Exists in DOM</span>
+<span class="n">AssertTag</span><span class="p">.</span><span class="n">NotExists</span><span class="p">(</span><span class="n">tag</span><span class="p">);</span> <span class="c1">//Not in DOM</span>
+<span class="n">AssertTag</span><span class="p">.</span><span class="n">IsVisible</span><span class="p">(</span><span class="n">tag</span><span class="p">);</span> <span class="c1">//Exists and visible</span>
+<span class="n">AssertTag</span><span class="p">.</span><span class="n">IsNotVisible</span><span class="p">(</span><span class="n">tag</span><span class="p">);</span> <span class="c1">//Exists but not visible</span>
+<span class="n">AssertTag</span><span class="p">.</span><span class="n">HasText</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="s">"Some random text"</span><span class="p">);</span> <span class="c1">//Contains specified text</span>
+</pre>
+</div>
+
+
+<h2>Timing</h2>
+
+<p>One of the most common problem with UI testing is getting the timing correct.  If you try to access a tag before it has been loaded, an error can occur.  A quick and dirty, yet common, solution is to simply sleep for a set number of seconds.  TestDrive automatically handles the timing by waiting until an element exists or is visible.  </p>
+
+<p>For instance, assume the user has just saved a record, and a success message is displayed either via a redirect or ajax. When the SuccessMessage tag is accessed, TestDrive will automatically pole the UI until the HTML element is available, before trying to access the HasText method.   The timeout is set to 10 seconds by default, but can be configured. </p>
+
+<div class="highlight">
+<pre><span class="n">AssertTag</span><span class="p">.</span><span class="n">HasText</span><span class="p">(</span><span class="n">Page</span><span class="p">.</span><span class="n">SuccessMessage</span><span class="p">,</span> <span class="s">"Record has been saved."</span><span class="p">);</span>
+</pre>
+</div>
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">TestDrive maintained by <a href="https://github.com/exsurgo">exsurgo</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
